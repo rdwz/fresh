@@ -80,6 +80,12 @@ export interface RouteConfig {
    * using the `useCSP` hook.
    */
   csp?: boolean;
+
+  /**
+   * Ignores previously inherited layout and mark this route as the root
+   * layout.
+   */
+  rootLayout?: boolean;
 }
 
 // deno-lint-ignore no-empty-interface

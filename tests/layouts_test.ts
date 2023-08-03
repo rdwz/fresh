@@ -62,3 +62,13 @@ Deno.test("check file types", async (t) => {
     },
   );
 });
+
+Deno.test("override layouts", async (t) => {
+  await withFresh(
+    "./tests/fixture_layouts/main.ts",
+    async (address) => {
+      const doc = await fetchHtml(`${address}/override`);
+      assertSelector(doc, ".app > .override-layout > .override-page");
+    },
+  );
+});

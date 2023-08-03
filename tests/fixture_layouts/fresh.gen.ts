@@ -17,8 +17,10 @@ import * as $11 from "./routes/foo/bar.tsx";
 import * as $12 from "./routes/foo/index.tsx";
 import * as $13 from "./routes/index.tsx";
 import * as $14 from "./routes/other.tsx";
-import * as $15 from "./routes/skip/sub/_layout.tsx";
-import * as $16 from "./routes/skip/sub/index.tsx";
+import * as $15 from "./routes/override/_layout.tsx";
+import * as $16 from "./routes/override/index.tsx";
+import * as $17 from "./routes/skip/sub/_layout.tsx";
+import * as $18 from "./routes/skip/sub/index.tsx";
 
 const manifest = {
   routes: {
@@ -37,8 +39,10 @@ const manifest = {
     "./routes/foo/index.tsx": $12,
     "./routes/index.tsx": $13,
     "./routes/other.tsx": $14,
-    "./routes/skip/sub/_layout.tsx": $15,
-    "./routes/skip/sub/index.tsx": $16,
+    "./routes/override/_layout.tsx": $15,
+    "./routes/override/index.tsx": $16,
+    "./routes/skip/sub/_layout.tsx": $17,
+    "./routes/skip/sub/index.tsx": $18,
   },
   islands: {},
   baseUrl: import.meta.url,
