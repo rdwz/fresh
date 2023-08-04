@@ -1,5 +1,6 @@
 import * as path from "$std/path/mod.ts";
-import { Status } from "../src/server/deps.ts";
+import { DenoConfig } from "$fresh/server.ts";
+import { JSONC, Status } from "../src/server/deps.ts";
 import {
   assert,
   assertEquals,
@@ -49,6 +50,7 @@ Deno.test({
 
     const files = [
       `/README.md`,
+      `/deno.json`,
       `/fresh.gen.ts`,
       `/components/Button.tsx`,
       `/islands/Counter.tsx`,
@@ -62,6 +64,15 @@ Deno.test({
 
     await t.step("check generated files", async () => {
       await assertFileExistence(files, tmpDirName);
+    });
+
+    await t.step("check deno.json", async () => {
+      const configPath = path.join(tmpDirName, "deno.json");
+      const json = JSON.parse(await Deno.readTextFile(configPath));
+
+      assert(json.tasks.start, "Missing 'start' task");
+      assert(json.tasks.build, "Missing 'build' task");
+      assert(json.tasks.preview, "Missing 'preview' task");
     });
 
     await t.step("start up the server and access the root page", async () => {
@@ -356,10 +367,20 @@ Deno.test("fresh-update", async function fn(t) {
     );
   });
 
+  await t.step("check deno.json", async () => {
+    const configPath = path.join(tmpDirName, "deno.json");
+    const json = JSONC.parse(await Deno.readTextFile(configPath)) as DenoConfig;
+
+    assert(json.tasks?.start, "Missing 'start' task");
+    assert(json.tasks?.build, "Missing 'build' task");
+    assert(json.tasks?.preview, "Missing 'preview' task");
+  });
+
   const comment = "// This is a test comment";
   const regex = /("preact": "https:\/\/esm.sh\/preact@[\d.]+",\n)/;
   const originalName = `${tmpDirName}/deno.json`;
   const updatedName = `${originalName}c`;
+
   await t.step("execute update command deno.jsonc support", async () => {
     try {
       Deno.renameSync(originalName, updatedName);

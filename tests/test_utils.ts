@@ -15,13 +15,13 @@ export function parseHtml(input: string) {
 }
 
 export async function startFreshServer(options: Deno.CommandOptions) {
-  const { serverProcess, lines, address } = await spawnServer(options);
+  const { serverProcess, lines, address, output } = await spawnServer(options);
 
   if (!address) {
     throw new Error("Server didn't start up");
   }
 
-  return { serverProcess, lines, address };
+  return { serverProcess, lines, address, output };
 }
 
 export async function fetchHtml(url: string) {
@@ -250,8 +250,10 @@ async function spawnServer(
       preventCancel: true,
     });
 
+  const output: string[] = [];
   let address = "";
   for await (const line of lines) {
+    output.push(line);
     const match = line.match(/https?:\/\/localhost:\d+/g);
     if (match) {
       address = match[0];
@@ -259,5 +261,5 @@ async function spawnServer(
     }
   }
 
-  return { serverProcess, lines, address };
+  return { serverProcess, lines, address, output };
 }

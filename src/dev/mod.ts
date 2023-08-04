@@ -10,6 +10,8 @@ import {
   walk,
 } from "./deps.ts";
 import { error } from "./error.ts";
+import { FreshOptions } from "../server/mod.ts";
+import { build } from "./build.ts";
 
 const MIN_DENO_VERSION = "1.31.0";
 
@@ -163,7 +165,11 @@ export default manifest;
   );
 }
 
-export async function dev(base: string, entrypoint: string) {
+export async function dev(
+  base: string,
+  entrypoint: string,
+  options: Omit<FreshOptions, "loadSnapshot"> = {},
+) {
   ensureMinDenoVersion();
 
   // Run update check in background
@@ -189,7 +195,11 @@ export async function dev(base: string, entrypoint: string) {
 
   if (manifestChanged) await generate(dir, newManifest);
 
-  await import(entrypoint);
+  if (Deno.args.includes("build")) {
+    await build(join(dir, "fresh.gen.ts"), options);
+  } else {
+    await import(entrypoint);
+  }
 }
 
 function arraysEqual<T>(a: T[], b: T[]): boolean {
